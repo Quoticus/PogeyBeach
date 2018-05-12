@@ -1,0 +1,5 @@
+Fill out "n,n,n,y,n" to get EI (money in bank)
+	- Everytime this is done, money is deposited into the user's "Bank"
+	- "Work" modifier increases the amount earned per cheque.
+		- This value ticks down each time a check is received.
+		- Should change this to be a progress meter that you have to fill, once you fill it you get "TOP STAMPS" and can 			start drawing EI.
