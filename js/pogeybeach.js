@@ -2,15 +2,17 @@ window.onload = function(){
 	var workBonus = 7;
 	var maxWeeks = 45;
 	let questions = $("#questions");
-	var fillMultiplier = 0;
-	var fillTimer = 5000;
+	//var fillMultiplier = 0;
+	//var fillTimer = 5000;
 	//var fillEvent;
 	let passable = {
 		work:0,
 		workBonus:workBonus,
 		questions:questions,
 		maxWeeks:maxWeeks,
-		fillEvent:0
+		fillEvent:0,
+		fillTimer:5000,
+		fillMultiplier:0
 	};
 
 	$(document).click(function(){
@@ -36,24 +38,26 @@ window.onload = function(){
 		if(passable.work < maxWeeks){
 			passable.work++;
 			//console.log(passable.fillEvent);
+			//console.log(passable.fillMultiplier);
 
-			if(!passable.fillEvent && passable.fillMultiplier > 0){
+			if(passable.fillEvent == 0 && passable.fillMultiplier > 0){
 				//console.log(passable.fillEvent);
-				setIntervalEvent(fillTimer, fillMultiplier, passable);
+				//console.log(passable.fillMultiplier);
+				setIntervalEvent(passable);
 			}
 			$("#multiplier").text(passable.work);
 			updateBar(passable.work, maxWeeks);
 		}
 	});
 	$("#autoWork").click(function(){
-		fillMultiplier++;
+		passable.fillMultiplier++;
 		if(passable.fillEvent){
 			//clearInterval(passable.fillEvent);
 			clearPassableInterval(passable);
 		}
-		setIntervalEvent(fillTimer, fillMultiplier, passable);
-		console.log((fillTimer/fillMultiplier));
-		$("#autoFill").text(fillMultiplier);
+		setIntervalEvent(passable);
+		console.log((passable.fillTimer/passable.fillMultiplier));
+		$("#autoFill").text(passable.fillMultiplier);
 		updateBar(passable.work, maxWeeks);
 	});
 }
@@ -74,11 +78,11 @@ function checkEntries(radios){
 	return true;
 }
 
-function setIntervalEvent(fillTimer, fillMultiplier, passable){
+function setIntervalEvent(passable){
 	let radios = passable.questions.children(":radio");
 	passable.fillEvent = setInterval(function(){
 		markNextRadio(radios, passable);
-	}, (fillTimer/fillMultiplier));
+	}, (passable.fillTimer/passable.fillMultiplier));
 }
 
 function markNextRadio(radios, passable){
@@ -87,7 +91,7 @@ function markNextRadio(radios, passable){
 			console.log("Marking Next Radio");
 			radios[i].checked = true;
 
-			//fix this crap
+			//this'll have to be changed to an else of the parent when a CONFIRM button is added
 			if(checkEntries(radios)){
 				calculateEarnings(passable);
 			}
@@ -98,7 +102,7 @@ function markNextRadio(radios, passable){
 
 function clearPassableInterval(passable){
 	clearInterval(passable.fillEvent);
-	passable.fillEvent = null;
+	passable.fillEvent = 0;
 }
 
 function calculateEarnings(passable){
